@@ -61,7 +61,8 @@ require_once( dirname( __FILE__ ) . '/includes/actions-filters.php' );
 		* @author Sherif Ali
 		* @since 1.0.0
 		*
-        * [dali-orders xclass="extra-class" data="number,animated|id,12"]
+        * [dali-orders]
+        * [dali-orders xclass="extra-class" data="data1,data1value|data2,data2value"]
 		*-------------------------------------------------------------------------------------*/
         function dali_orders( $atts, $content = null ) {
 
@@ -110,7 +111,8 @@ require_once( dirname( __FILE__ ) . '/includes/actions-filters.php' );
 		* @author Sherif Ali
 		* @since 1.0.0
 		*
-        * [dali-total-sales xclass="extra-class" data="number,animated|id,12"]
+        * [dali-total-sales]
+        * [dali-total-sales xclass="extra-class" data="data1,data1value|data2,data2value"]
 		*-------------------------------------------------------------------------------------*/
         function dali_total_sales( $atts, $content = null ) {
 
@@ -128,8 +130,7 @@ require_once( dirname( __FILE__ ) . '/includes/actions-filters.php' );
             $data_props = $this->parse_data_attributes( $atts['data'] );
 
             // wc_productget_total_sales
-            $wc_product = new WC_Product();
-            $dali_total_sales = $wc_product->get_total_sales();
+            $dali_total_sales = $this->dali_get_total_sales_db();
 
             if( !empty( $dali_total_sales ) && $dali_total_sales  > 0 ) {
                 $total_sales = $dali_total_sales;
@@ -171,6 +172,33 @@ require_once( dirname( __FILE__ ) . '/includes/actions-filters.php' );
                 $data_props = false;
             }
             return $data_props;
+        }
+
+       /*--------------------------------------------------------------------------------------
+		*
+		* Get dali_get_total_sales_db for shortcodes
+		*
+		*-------------------------------------------------------------------------------------*/
+        function dali_get_total_sales_db() {
+
+            global $wpdb;
+            
+            $order_totals = apply_filters( 'woocommerce_reports_sales_overview_order_totals', $wpdb->get_row( "
+            
+            SELECT SUM(meta.meta_value) AS total_sales, COUNT(posts.ID) AS total_orders FROM {$wpdb->posts} AS posts
+            
+            LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
+            
+            WHERE meta.meta_key = '_order_total'
+            
+            AND posts.post_type = 'shop_order'
+            
+            AND posts.post_status IN ( '" . implode( "','", array( 'wc-completed', 'wc-processing', 'wc-on-hold' ) ) . "' )
+            
+            " ) );
+            
+            return absint( $order_totals->total_sales);
+            
         }
 }
 
