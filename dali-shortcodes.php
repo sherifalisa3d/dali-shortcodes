@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Dali Shortcodes
-Plugin URI: https://github.com/MWDelaney/dali-shortcodes
+Plugin URI: https://github.com/sherifalisa3d/dali-shortcodes
 Description: The plugin adds a shortcodes for dali elements.
 Version: 1.0.0
 Author: Sherif Ali
-Author URI:
+Author URI: https://github.com/sherifalisa3d/
 License: MIT
 */
 
