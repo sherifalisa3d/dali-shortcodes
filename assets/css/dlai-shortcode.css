@@ -1,11 +1,16 @@
-.dali-template-selector{
-    border-radius: 8px !important;
+.dali-template-selector,
+.dali-template-preview{
+    border-radius: 4px !important;
+    width: 50%;
+    /* margin: 0 2%; */
 }
-.dali-template-selector:hover{
+.dali-template-selector:hover,
+.dali-template-preview:hover{
     background: #8bc34a;
     color: #fff !important;
 }
-.dali-template-selector.active{
+.dali-template-selector.active,
+.dali-template-preview.active{
     background: #8bc34a;
     color: #fff !important;
 }
