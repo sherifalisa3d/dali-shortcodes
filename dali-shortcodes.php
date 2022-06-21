@@ -3,7 +3,7 @@
 *Plugin Name: Dali Shortcodes
 * Plugin URI: https://github.com/sherifalisa3d/dali-shortcodes
 * Description: The plugin adds a shortcodes Helper for dali Site elements.
-* Version: 1.0.1
+* Version: 1.0.2
 * Author: Sherif Ali
 * Author URI: https://github.com/sherifalisa3d/
 * License: MIT
