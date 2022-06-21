@@ -1,1 +1,1 @@
-# dali-shortcodes
+# dali shortcodes
