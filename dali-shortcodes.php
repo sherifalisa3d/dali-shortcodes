@@ -2,8 +2,8 @@
 /*
 Plugin Name: Dali Shortcodes
 Plugin URI: https://github.com/sherifalisa3d/dali-shortcodes
-Description: The plugin adds a shortcodes for dali elements.
-Version: 1.0.0
+Description: The plugin adds a shortcodes Helper for dali Site elements.
+Version: 1.0.1
 Author: Sherif Ali
 Author URI: https://github.com/sherifalisa3d/
 License: MIT
@@ -17,6 +17,7 @@ License: MIT
 
 require_once( dirname( __FILE__ ) . '/includes/defaults.php' );
 require_once( dirname( __FILE__ ) . '/includes/actions-filters.php' );
+require_once( dirname( __FILE__ ) . '/includes/template-acf.php' );
 
 /*========================================================================*/
 
@@ -30,6 +31,21 @@ require_once( dirname( __FILE__ ) . '/includes/actions-filters.php' );
         function __construct(){
             //Initialize shortcodes
             add_action( 'init', array( $this, 'add_shortcodes' ) );
+            add_action( 'wp_enqueue_scripts',  array( $this, 'dali_shortcode_enque_scripts' ) );
+            
+        }
+
+        /*--------------------------------------------------------------------------------------
+		*
+		* Add necessary js and css files for the plugin
+		*
+		* @author sherif ali
+		* @since 1.0
+		*
+		*-------------------------------------------------------------------------------------*/ 
+        public function dali_shortcode_enque_scripts() {
+         wp_enqueue_script( 'dlai-shortcode-js', plugin_dir_url( __file__ ) . '/assets/js/dali-shorcode.js', array( 'jquery' ), '1.0.0', true);
+         wp_enqueue_style( 'dlai-shortcode-css', plugin_dir_url( __file__ )  . '/assets/css/dlai-shortcode.css');
         }
         
         /*--------------------------------------------------------------------------------------
@@ -45,6 +61,8 @@ require_once( dirname( __FILE__ ) . '/includes/actions-filters.php' );
             $shortcodes = array(
                 'dali-orders',
                 'dali-total-sales',
+                'dali-wu-template',
+                'dali-site-url'
             );
 
             foreach ( $shortcodes as $shortcode ) {
@@ -150,6 +168,91 @@ require_once( dirname( __FILE__ ) . '/includes/actions-filters.php' );
 
             return $output;
         }
+
+        /*--------------------------------------------------------------------------------------
+		*
+		* dali_wu_template
+		*
+		* @author Sherif Ali
+		* @since 1.0.0
+		*
+        * [dali-wu-template]
+		*-------------------------------------------------------------------------------------*/
+        function dali_wu_template( $atts, $content = null ) {
+
+            $atts = shortcode_atts( array(
+                "class"  => true,
+                "page_id" => array(),
+            ), $atts );
+
+            extract( $atts );
+
+            $class  = ( $atts['class']   == 'true' )  ? 'dali-total-sales' : '';
+
+            // this is dali custom code get pages from site template to select from 
+            /**====================================================================================== */
+                //Querying all pages in the argument
+                $args = array( 'post_type' => 'page', 'post_per_page' => -1 );
+                if(!empty($atts['page_id'])){
+                    $args['post__in'] = [$atts['page_id']];
+                }
+            ob_start();
+            $base_site_id = 36;
+            switch_to_blog( $base_site_id );     
+            $site_template_pages = get_pages( $args ); ?>
+                <div class="wu-site-pages" style="padding: 30px 0;">
+                    <p id="wrapper-field-site_title" style="clear: both;">
+                        <label for="field-site_title" class="wu-block"><?php echo __('اختيار القوالب', 'dali'); ?><span
+                                class="wu-checkout-required-field wu-text-red-500">*</span>
+                        </label>
+                    </p>
+                    <div id="wu-site-template-container-grid"
+                        class="wu-grid wu-grid-cols-1 sm:wu-grid-cols-2 md:wu-grid-cols-3 wu-gap-4">
+                        <?php foreach( $site_template_pages as $pages ) {
+                            if( get_field('make_page_template', $pages->ID) === true){
+                                include( dirname( __FILE__ ) . '/includes/wu-pages.php' );
+                            }
+                        } ?>
+                        <input type="hidden" name="dali_home_id" value="">
+                    </div>
+                </div>
+            <?php 
+            restore_current_blog();            
+            /**====================================================================================== */
+            
+        }
+         
+        
+        /*--------------------------------------------------------------------------------------
+		*
+		* dali_total_sales
+		*
+		* @author Sherif Ali
+		* @since 1.0.0
+		*
+        * [dali-site-url]
+        * [dali-site-url blog-id=""]
+		*-------------------------------------------------------------------------------------*/
+        function dali_site_url( $atts, $content = null ) {
+
+            $atts = shortcode_atts( array(
+                "blog-id"  => false,
+            ), $atts );
+
+            extract( $atts );
+            ob_start();
+            if( !empty( $atts['blog-id'] ) && is_numeric( $atts['blog-id'] ) ){
+                 $blog_id = $atts['blog-id'];
+            }else{
+                 $blog_id  = get_current_blog_id();
+            }
+            $output = get_site_url( $blog_id );
+            $output .= ob_get_clean();
+
+            return $output;
+        }
+
+
 
         /*--------------------------------------------------------------------------------------
 		*
