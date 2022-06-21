@@ -31,7 +31,11 @@
             data-id="<?php echo esc_attr($pages->ID); ?>">
             <span><?php _e('Select', 'wp-ultimo'); ?></span>
         </a>
-
+        <a title="<?php esc_attr_e('View Template Preview', 'wp-ultimo'); ?>"
+            class="dali-template-preview button btn button-primary btn-primary wu-w-full wu-text-center wu-cursor-pointer"
+            href="<?php echo get_permalink($pages->ID); ?>" target="_blank">
+            <span><?php esc_attr_e('Preview', 'wp-ultimo'); ?></span>
+        </a>
     </div>
 
 </div>
