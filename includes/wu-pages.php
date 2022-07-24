@@ -7,7 +7,6 @@
         <a title="<?php esc_attr_e('View Template Preview', 'wp-ultimo'); ?>"
             class="wu-site-template-selector wu-cursor-pointer wu-no-underline"
             href="<?php echo get_permalink($pages->ID); ?>" target="_blank">
-
             <img class="wu-site-template-image wu-w-full wu-border-solid wu-border wu-border-gray-300 wu-mb-4 wu-bg-white"
                 src="<?php echo esc_attr(get_field('page_template_image', $pages->ID)); ?>">
         </a>
@@ -15,15 +14,11 @@
     </div>
 
     <h3 class="wu-site-template-title wu-text-lg wu-font-semibold">
-
         <?php echo  $pages->post_title; ?>
-
     </h3>
 
     <p class="wu-site-template-description wu-text-sm">
-
         <?php echo esc_attr( get_field('page_template_description', $pages->ID) ); ?>
-
     </p>
 
     <div class="wu-mt-4">

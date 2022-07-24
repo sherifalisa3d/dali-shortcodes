@@ -65,7 +65,8 @@ require_once( dirname( __FILE__ ) . '/includes/template-acf.php' );
                 'dali-orders',
                 'dali-total-sales',
                 'dali-wu-template',
-                'dali-site-url'
+                'dali-site-url',
+                'dali-product-count'
             );
 
             foreach ( $shortcodes as $shortcode ) {
@@ -249,13 +250,53 @@ require_once( dirname( __FILE__ ) . '/includes/template-acf.php' );
             }else{
                  $blog_id  = get_current_blog_id();
             }
-            $output = get_site_url( $blog_id );
+            $blog_url  = get_site_url( $blog_id );
+            $blog_host = parse_url($blog_url, PHP_URL_HOST);
+            $blog_path = parse_url($blog_url, PHP_URL_PATH);
+            if( !empty( $blog_path ) ){
+                $output = $blog_host.$blog_path;
+            } else {
+                $output = $blog_host;
+            }
+            
             $output .= ob_get_clean();
 
             return $output;
         }
 
+/*--------------------------------------------------------------------------------------
+		*
+		* dali_total_sales
+		*
+		* @author Sherif Ali
+		* @since 1.0.0
+		*
+        * [dali-product-count]
+		*-------------------------------------------------------------------------------------*/
+        function dali_product_count( $atts, $content = null ) {
 
+            $atts = shortcode_atts( array(), $atts );
+
+            extract( $atts );
+            ob_start();
+            $args = array(
+                // 'stock_status' => 'instock',
+                'status' => 'publish',
+                'limit' => -1,
+            );
+            $products = wc_get_products( $args );
+            if( count( $products ) > 0  ){
+                $output = count( $products );
+            }else{
+                $output = 0;
+            }
+            
+            
+            
+            $output .= ob_get_clean();
+
+            return $output;
+        }
 
         /*--------------------------------------------------------------------------------------
 		*
