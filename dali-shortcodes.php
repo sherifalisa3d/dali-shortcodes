@@ -201,7 +201,7 @@ require_once( dirname( __FILE__ ) . '/includes/template-acf.php' );
                     $args['post__in'] = [$atts['page_id']];
                 }
             ob_start();
-            $base_site_id = 36;
+            $base_site_id = 2;
             switch_to_blog( $base_site_id );     
             $site_template_pages = get_pages( $args ); ?>
                 <div class="wu-site-pages" style="padding: 30px 0;">
